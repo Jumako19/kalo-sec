@@ -1,0 +1,106 @@
+                                                                                                                                      /usr/bin/kalo-sec                                                                                                                                                                                                                                                      
+#!/bin/bash
+
+# ======================= COLORES ========================
+RED="\033[31m"
+#GREEN="\033[32m"
+#YELLOW="\033[33m"
+BLUE="\033[34m"
+CYAN="\033[36m"
+#MAGENTA="\033[35m"
+RESET="\033[0m"
+BOLD="\033[1m"
+
+# RUTA CORRECTA A TUS SCRIPTS
+TOOL_PATH="/usr/share/kalo-sec/tools"
+DOCS_PATH="/opt/kalo-sec/docs"
+
+VERSION="1.0"
+AUTHOR="Jumako19"
+
+# ======================= ANIMACIONES ========================
+
+typewriter() {
+    text="$1"
+    speed=${2:-0.002}
+    for ((i=0; i<${#text}; i++)); do
+        echo -n "${text:$i:1}"
+        sleep $speed   
+ done
+    echo
+}
+
+loading() {
+    chars="/—\|"
+    for i in {1..20}; do
+        for (( j=0; j<${#chars}; j++ )); do
+            echo -en "\r${YELLOW}Cargando... ${chars:$j:1}"
+            sleep 0.1
+        done
+    done
+    echo -e "\r${YELLOW}Listo!              ${RESET}"
+}
+
+# ======================= LOGO ========================
+
+logo() {
+echo -e "$BLUE}"
+cat << "EOF"
+██╗  ██╗ █████╗ ██╗      ██████╗     ███████╗███████╗ ██████╗
+██║ ██╔╝██╔══██╗██║     ██╔════╝     ██╔════╝██╔════╝██╔════╝
+█████╔╝ ███████║██║     ██║  ███╗    ███████╗█████╗  ██║     
+██╔═██╗ ██╔══██║██║     ██║   ██║    ╚════██║██╔══╝  ██║     
+██║  ██╗██║  ██║███████╗╚██████╔╝    ███████║███████╗╚██████╗
+╚═╝  ╚═╝╚═╝  ╚═╝╚══════╝ ╚═════╝     ╚══════╝╚══════╝ ╚═════╝
+EOF
+echo -e "${BLUE}${BOLD}                    Security Toolkit${RESET}\n"
+}
+
+# ======================= MENU ========================
+
+show_menu() {
+    clear
+    logo
+    typewriter "${YELLOW}Versión ${VERSION} | Desarrollado por ${AUTHOR}" 0.003
+
+    echo -e "${YELLOW}"
+    echo "==============================================="
+    echo "                MENÚ PRINCIPAL"
+    echo "==============================================="
+    echo -e "${RESET}"
+
+    echo -e "${YELLOW}1)${RESET} Auditoría SSH"
+    echo -e "${YELLOW}2)${RESET} Información del sistema"
+    echo -e "${YELLOW}3)${RESET} Comprobación de integridad"
+    echo -e "${YELLOW}4)${RESET} Escaneo Nmap"
+    echo -e "${YELLOW}5)${RESET} Rootkit Hunter"
+    echo -e "${YELLOW}6)${RESET} Aplicar Hardening"
+    echo -e "${YELLOW}7)${RESET} Revertir Hardening"
+    echo -e "${YELLOW}0)${RESET} Salir"
+}
+
+execute_option() {
+    case $1 in
+        1) loading; sudo bash "$TOOL_PATH/audit_ssh.sh" ;;
+        2) loading ;sudo bash "$TOOL_PATH/sysinfo.sh" ;;
+        3) loading ;sudo bash "$TOOL_PATH/integrity_check.sh" ;;
+        4) loading; sudo bash "$TOOL_PATH/scan_nmap.sh" ;;
+        5) loading; sudo bash "$TOOL_PATH/run_rootscan.sh" ;;
+        6) loading; sudo bash "$TOOL_PATH/hardening.sh" ;;
+        7) loading; sudo bash "$TOOL_PATH/revert.sh" ;;
+        0) echo -e "${GREEN}Saliendo...${RESET}"; exit 0 ;;
+        *) echo -e "${RED}Opción inválida${RESET}" ;;
+    esac
+}
+
+# ======================= LOOP PRINCIPAL ========================
+
+while true; do
+    show_menu
+    echo -ne "${BLUE}Selecciona una opción:${RESET} "
+    read option
+    execute_option "$option"
+    echo -e "\n${BLUE}Presiona ENTER para continuar...${RESET}"
+    read
+done
+
