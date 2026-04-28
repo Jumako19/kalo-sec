@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#INSTALACION
 echo "[+] Instalando KALO-SEC..."
 
 sudo mkdir -p /usr/share/kalo-sec/tools
